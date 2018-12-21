@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dleplugin>
+	<name>MWS URL Shortener</name>
+	<description>Sitenizdeki linkleri otomatik olarak kısaltın.</description>
+	<icon>engine/skins/images/urlshortener.png</icon>
+	<version>1.3.1</version>
+	<dleversion>13.0</dleversion>
+	<versioncompare>greater</versioncompare>
+	<mysqlinstall><![CDATA[CREATE TABLE {prefix}_urlshortener (
+	`id` int(11) unsigned NOT NULL auto_increment,
+	`short_url` varchar(255) NOT NULL,
+	`org_url` varchar(500) NOT NULL,
+	`hash` varchar(32) NOT NULL,
+	`type` tinyint(1) NOT NULL,
+	`has_pass` tinyint(1) NOT NULL,
+	`status` tinyint(1) NOT NULL DEFAULT '1',
+	PRIMARY KEY  (`id`)
+);]]></mysqlinstall>
+	<mysqlupgrade><![CDATA[]]></mysqlupgrade>
+	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, icon, title, descr, allow_groups) VALUES ('urlshortener', 'engine/skins/images/urlshortener.png', 'MWS URL Shortener v1.3', 'Sitenizdeki linkleri otomatik olarak kısaltın.', '1')]]></mysqlenable>
+	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE name = 'urlshortener';]]></mysqldisable>
+	<mysqldelete><![CDATA[DELETE FROM {prefix}_admin_sections WHERE name = 'urlshortener';
+DROP TABLE IF EXISTS {prefix}_urlshortener;]]></mysqldelete>
+	<file name="engine/modules/main.php">
+		<operation action="before">
+			<searchcode><![CDATA[echo $tpl->result['main'];]]></searchcode>
+			<replacecode><![CDATA[// URL Shortener - start
+require_once ENGINE_DIR . "/modules/urlshortener.module.php";
+// URL Shortener - end]]></replacecode>
+		</operation>
+	</file>
+</dleplugin>
